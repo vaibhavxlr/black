@@ -61,8 +61,8 @@ jobs:
 
       - name: Quickly test executable
         run: |
-          ls -lh $(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")/libpython3.13.so.1.0
-          file $(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")/libpython3.13.so.1.0
+          ls -lh $(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")/libpython3.14.6.so.1.0
+          file $(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")/libpython3.14.6.so.1.0
           ./dist/${{ matrix.asset_name }} --version
           ./dist/${{ matrix.asset_name }} src --verbose
           
