@@ -53,27 +53,27 @@ jobs:
           python-version: "3.14"
           pip-version: "25.3"
           pip-install: .[colorama] --group pyinstaller
-      - name: Strip libpython 
-        if: runner.os == 'Linux'
-        run: |
-          LIB=$(python - <<'PY'
-          import sysconfig
-          import pathlib
+      # - name: Strip libpython 
+      #   if: runner.os == 'Linux'
+      #   run: |
+      #     LIB=$(python - <<'PY'
+      #     import sysconfig
+      #     import pathlib
 
-          libdir = pathlib.Path(sysconfig.get_config_var("LIBDIR"))
-          print(next(libdir.glob("libpython*.so*")))
-          PY
-          )
+      #     libdir = pathlib.Path(sysconfig.get_config_var("LIBDIR"))
+      #     print(next(libdir.glob("libpython*.so*")))
+      #     PY
+      #     )
 
-          echo "Before:"
-          ls -lh "$LIB"
-          file "$LIB"
+      #     echo "Before:"
+      #     ls -lh "$LIB"
+      #     file "$LIB"
 
-          strip --strip-debug "$LIB"
+      #     strip --strip-debug "$LIB"
 
-          echo "After:"
-          ls -lh "$LIB"
-          file "$LIB"
+      #     echo "After:"
+      #     ls -lh "$LIB"
+      #     file "$LIB"
       - name: Build executable with PyInstaller
         run:
           python -m PyInstaller -F --strip --log-level=DEBUG --name ${{ matrix.asset_name }} --add-data
