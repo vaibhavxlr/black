@@ -46,7 +46,27 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+      - name: Strip libpython 
+        if: runner.os == 'Linux'
+        run: |
+          LIB=$(python - <<'PY'
+          import sysconfig
+          import pathlib
 
+          libdir = pathlib.Path(sysconfig.get_config_var("LIBDIR"))
+          print(next(libdir.glob("libpython*.so*")))
+          PY
+          )
+
+          echo "Before:"
+          ls -lh "$LIB"
+          file "$LIB"
+
+          strip --strip-debug "$LIB"
+
+          echo "After:"
+          ls -lh "$LIB"
+          file "$LIB"
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
@@ -67,15 +87,6 @@ jobs:
           ./dist/${{ matrix.asset_name }} --version
           ./dist/${{ matrix.asset_name }} src --verbose
           
-      - name: Upload analysis
-        uses: actions/upload-artifact@v4
-        with:
-          name: pyinstaller-analysis
-          path: |
-            build/**/Analysis-00.toc
-            build/**/PKG-00.toc
-            build/**/warn-*.txt
-            build/**/xref-*.html
 
       - run: gh release upload "$tag" dist/${{ matrix.asset_name }}
         shell: bash
