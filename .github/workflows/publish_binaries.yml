@@ -76,7 +76,7 @@ jobs:
           file "$LIB"
       - name: Build executable with PyInstaller
         run:
-          python -m PyInstaller -F --log-level=DEBUG --name ${{ matrix.asset_name }} --add-data
+          python -m PyInstaller -F --strip --log-level=DEBUG --name ${{ matrix.asset_name }} --add-data
           'src/blib2to3${{ matrix.pathsep }}blib2to3' src/black/__main__.py
 
       - name: Quickly test executable
